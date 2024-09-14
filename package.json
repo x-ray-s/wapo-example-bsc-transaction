@@ -1,0 +1,34 @@
+{
+  "name": "wapo-bsc-transaction",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build:client": "vite build",
+    "dev:client": "vite dev",
+    "preview:client": "vite preview",
+    "serve": "node server/app.js",
+    "build:server": "node esbuild.js",
+    "build": "npm run build:client && npm run build:server",
+    "build:preview": "npm run build:client && RUNTIME=node npm run build:server",
+    "preview": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@hono/node-server": "^1.12.2",
+    "@phala/wapo-env": "^0.9.3",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.2",
+    "hono": "^4.6.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "esbuild": "^0.23.1",
+    "vite": "^5.4.4",
+    "vite-plugin-singlefile": "^2.0.2"
+  }
+}
