@@ -24,9 +24,8 @@ function Modal({ openModal, closeModal, children }) {
 }
 
 function App() {
-  const [count, setCount] = useState(0)
   const [info, setInfo] = useState('')
-  const baseUrl = import.meta.env.DEV ? '/api' : ''
+  const baseUrl = import.meta.env.DEV ? '/api' : window.location.pathname
 
   const [address, setAddress] = useState('')
   const [valid, setValid] = useState(-1)
@@ -46,22 +45,23 @@ function App() {
   }
 
   async function checkWhitelist() {
-    const r = await fetch(`${baseUrl}/`, {
+    const r = await fetch(`${baseUrl}`, {
       method: 'POST',
-      body: JSON.stringify({ address })})
+      body: JSON.stringify({ address })
+    })
       .then(res => res.json())
-      setValid(r.valid ? 1 : 0)
-      return r.valid
+    setValid(r.valid ? 1 : 0)
+    return r.valid
   }
   async function getWhitelist() {
-    const r = await fetch(`${baseUrl}/?whitelist=1`)
+    const r = await fetch(`${baseUrl}?whitelist=1`)
       .then(res => res.json())
     setWhitelistLoaded(true)
     setWhitelist(r)
   }
 
   useEffect(() => {
-    fetch(`${baseUrl}/?info=1`)
+    fetch(`${baseUrl}?info=1`)
       .then(res => res.json())
       .then(setInfo)
   }, [])

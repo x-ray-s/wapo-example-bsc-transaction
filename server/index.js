@@ -5,11 +5,16 @@ if (process.env.RUNTIME !== "wapo") {
 }
 
 const ethers = require("ethers");
+// const fetch = require("node-fetch");
 const BSC_RPC_URL = "https://bsc-testnet-dataseed.bnbchain.org"; // testnet
 const bscProvider = new ethers.JsonRpcProvider(BSC_RPC_URL);
-
+let wapoENV = {};
+if (process.env.RUNTIME === "wapo") {
+  wapoENV = JSON.parse(process.env.secret);
+}
+const secret = process.env.SECRET_KEY || wapoENV.SECRET_KEY;
 async function sendBNB(to, amount) {
-  const signer = new ethers.Wallet(process.env.SECRET_KEY, bscProvider);
+  const signer = new ethers.Wallet(secret, bscProvider);
 
   const balance = ethers.formatUnits(
     await bscProvider.getBalance(signer.address)
@@ -39,10 +44,11 @@ function getWhitelist() {
 
 async function info() {
   // example code, you can get transaction info from the blockchain
-  const signer = new ethers.Wallet(process.env.SECRET_KEY, bscProvider);
+  const signer = new ethers.Wallet(secret, bscProvider);
 
   const address = signer.address;
   const balance = ethers.formatUnits(await bscProvider.getBalance(address));
+
   return {
     address,
     balance,

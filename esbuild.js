@@ -4,7 +4,6 @@ let runtime = '"wapo"';
 if (process.env.RUNTIME) {
   runtime = JSON.stringify(process.env.RUNTIME);
 }
-console.log(process.env.RUNTIME, runtime);
 esbuild
   .build({
     entryPoints: ["server/app.js"],
@@ -17,6 +16,12 @@ esbuild
       "process.env.RUNTIME": runtime,
     },
     plugins: [rawPlugin()],
+    banner: {
+      js: "var module = module || { exports: {} };",
+    },
+    footer: {
+      js: "module.exports = globalThis.launcher;",
+    },
   })
   .then(() => console.log("⚡Bundle build complete ⚡"))
   .catch(() => {

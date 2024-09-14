@@ -35,22 +35,29 @@ It will genurate a final bundle js contain the client code and the server code, 
 
 ### Run in wapo runtime
 
-docker image: [phalanetwork/wapo-devserver]() or [download](https://cdn.discordapp.com/attachments/1270048783266353256/1283797522946461757/wapo-devserver-v0.0.5.tar?ex=66e6475d&is=66e4f5dd&hm=779ea1103c8c104eaf5ade3a1f54379de643044928a6e4f34a53eb7bde63d9e0&)
+docker image: [phalanetwork/wapo-devserver]()
 
 ```bash
 # MD5 checksum:
-md5sum ~/Downloads/wapo-devserver-v0.0.5.tar
-6b1bf31d3a75f0d534ba6d5a9aa9853f
+md5sum ~/Downloads/wapo-devserver-v0.0.6.tar
+4b98246110ac81be71bbd7de475d18adad678d93f26688ea59016edb7a411472
 
 # load image
-sudo docker load -i wapo-devserver-v0.0.5.tar
+sudo docker load -i wapo-devserver-v0.0.6.tar
 sudo docker tag 7abe9b275764 phalanetwork/wapo-devserver:latest
 
 # run container with our project
 docker run --rm --name wapo -p 8000:80 -v $(pwd)/dist:/home/wapo phalanetwork/wapo-devserver
+
+# post .env to container
+curl http://127.0.0.1:8000/vaults -H 'Content-Type: application/json' -d '{"cid":"local", "data": {"SECRET_KEY": "YOUR_SECRET_KEY"}}'
+
+# get container logs
+curl http://127.0.0.1:8000/logs/all/local
 ```
 
 ### Useful links
 
 - Get testnet BNB token from [BNB testnet faucet](https://www.bnbchain.org/en/testnet-faucet)
 - Get testnet RPC from [BNB JSON-RPC Endpoint](https://docs.bnbchain.org/bnb-smart-chain/developers/rpc/#bsc-testnet-chainid-0x61-97-in-decimal)
+- A starter project for wapo.js: [minimal-wapo-ts-starter](https://github.com/Leechael/minimal-wapo-ts-starter)

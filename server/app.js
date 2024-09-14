@@ -1,5 +1,3 @@
-const { serve } = require("@hono/node-server");
-const { handle } = require("@phala/wapo-env/guest");
 const { Hono } = require("hono");
 const { info, checkWhitelist, getWhitelist } = require("./index");
 const app = new Hono();
@@ -10,6 +8,11 @@ if (process.env.NODE_ENV === "production") {
 } else {
   html = `<h1>Please use vite to run client</h1>`;
 }
+
+app.onError((err, c) => {
+  console.error(err);
+  return c.text(err.message, 500);
+});
 
 app.get("/", async (c) => {
   if (c.req.query("info")) {
@@ -27,10 +30,18 @@ app.post("/", async (c) => {
   return c.json({ valid });
 });
 
+let launcher = null;
+
 if (process.env.RUNTIME === "wapo") {
-  handle(app);
+  const { handle } = require("@phala/wapo-env/guest");
+
+  launcher = handle(app);
 } else {
+  const { serve } = require("@hono/node-server");
+
   // you can change dev server config below
-  serve(app);
+  launcher = serve(app);
   console.log("Server is running on http://localhost:3000");
 }
+
+globalThis.launcher = launcher;
