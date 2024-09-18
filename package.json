@@ -7,10 +7,13 @@
     "dev:client": "vite dev",
     "preview:client": "vite preview",
     "serve": "node server/app.js",
+    "dev:server": "nodemon server/app.js",
     "build:server": "node esbuild.js",
-    "build": "npm run build:client && npm run build:server",
     "build:preview": "npm run build:client && RUNTIME=node npm run build:server",
-    "preview": "node dist/index.js"
+    "preview": "node dist/index.js",
+    "watch": "nodemon --watch client --watch server --exec 'npm run build'",
+    "build": "npm run build:client && npm run build:server",
+    "start": "docker run --rm --name wapo -p 8000:80 -v $(pwd)/dist:/home/wapo phalanetwork/wapo-devserver"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +32,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
     "esbuild": "^0.23.1",
+    "nodemon": "^3.1.5",
     "vite": "^5.4.4",
     "vite-plugin-singlefile": "^2.0.2"
   }

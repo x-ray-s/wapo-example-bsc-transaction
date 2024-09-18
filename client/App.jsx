@@ -24,6 +24,8 @@ function Modal({ openModal, closeModal, children }) {
 }
 
 function App() {
+  const TOKEN = 'ETH'
+  const AMOUNT = '0.001'
   const [info, setInfo] = useState('')
   const baseUrl = import.meta.env.DEV ? '/api' : window.location.pathname
 
@@ -35,6 +37,29 @@ function App() {
 
   const [modalOpen, setModalOpen] = useState(false)
 
+  const http = (path, config = {}) => {
+
+    const originSearch = new URLSearchParams(window.location.search)
+
+    const query = new URLSearchParams(config.query || {})
+    if (originSearch.get('key')) {
+      query.set('key', originSearch.get('key'))
+    }
+    const orign = window.location.origin
+
+    // wapo server route only support '/' 
+    const _path = path === '/' ? '' : path
+
+    const url = new URL(`${orign}${baseUrl}${_path}?${query.toString()}`);
+    const { query: _, ...withoutQuery } = config
+
+    return fetch(url.toString(), {
+      ...withoutQuery
+    })
+      .then(res => res.json())
+  }
+
+
   const validateClass = (valid) => {
     if (valid === 1) {
       return 'valid'
@@ -45,24 +70,22 @@ function App() {
   }
 
   async function checkWhitelist() {
-    const r = await fetch(`${baseUrl}`, {
+    const r = await http('/', {
       method: 'POST',
       body: JSON.stringify({ address })
     })
-      .then(res => res.json())
     setValid(r.success ? 1 : 0)
     return r.success
   }
   async function getWhitelist() {
-    const r = await fetch(`${baseUrl}?whitelist=1`)
-      .then(res => res.json())
+
+    const r = await http('/', { query: { whitelist: 1 } })
     setWhitelistLoaded(true)
     setWhitelist(r)
   }
 
   async function getInfo() {
-    const r = await fetch(`${baseUrl}?info=1`)
-      .then(res => res.json())
+    const r = await http('/', { query: { info: 1 } })
     setInfo(r)
   }
 
@@ -71,18 +94,17 @@ function App() {
 
   }, [])
 
-  async function send001() {
+  async function send() {
     setModalOpen(false)
 
-    const r = await fetch(`${baseUrl}?send=1`, {
+    const r = await http('/', {
       method: 'POST',
       body: JSON.stringify({ address, type: 'send' })
     })
-      .then(res => res.json())
 
     setTimeout(() => {
       if (r.success) {
-        alert('Success to send 0.01 BNB to address')
+        alert(`Success to send ${AMOUNT} ${TOKEN} to address`)
       } else {
         alert('Address is not in whitelist')
       }
@@ -100,10 +122,10 @@ function App() {
       <h1>Hello Wapo</h1>
       <div className="card">
         <p>
-          Main address: <a href={`https://testnet.bscscan.com/address/${info.address}`} target="_blank">{info.address}</a>
+          Main address: <a href={`https://base-sepolia.blockscout.com//address/${info.address}`} target="_blank">{info.address}</a>
         </p>
         <p>
-          Balance: {info.balance} BNB
+          Balance: {info.balance} {TOKEN}
         </p>
 
         <div>
@@ -136,14 +158,14 @@ function App() {
         </button>
 
         <button className="btn" onClick={() => setModalOpen(true)}>
-          Send 0.01 BNB to address
+          Send {AMOUNT} {TOKEN} to address
         </button>
         <Modal openModal={modalOpen} closeModal={() => setModalOpen(false)}>
           <h2>Send Confirm</h2>
-          <p>Are you sure you want to send 0.01 BNB to {address}?</p>
+          <p>Are you sure you want to send {AMOUNT} {TOKEN} to {address}?</p>
           <div className="modal-buttons">
             <button className="btn" onClick={() => setModalOpen(false)}>Cancel</button>
-            <button className="btn" onClick={send001}>Confirm</button>
+            <button className="btn" onClick={send}>Confirm</button>
           </div>
         </Modal>
       </div>

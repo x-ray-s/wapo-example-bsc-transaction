@@ -18,10 +18,17 @@ npm run dev:client
 and run the server project:
 
 ```bash
-npm run serve
+npm run dev:server
 ```
 
-You also use other js runtime to run the project, like `deno` or `bun`, or use `ts-node-dev` or `nodemon` to run the server project for better development experience.
+if you want to run the project in wapo runtime, you can run:
+
+```bash
+npm run watch
+
+# in another terminal window
+npm run start
+```
 
 ### Build
 
@@ -47,7 +54,9 @@ sudo docker load -i wapo-devserver-v0.0.6.tar
 sudo docker tag 7abe9b275764 phalanetwork/wapo-devserver:latest
 
 # run container with our project
+# or npm run start
 docker run --rm --name wapo -p 8000:80 -v $(pwd)/dist:/home/wapo phalanetwork/wapo-devserver
+
 
 # post .env to container
 curl http://127.0.0.1:8000/vaults -H 'Content-Type: application/json' -d '{"cid":"local", "data": {"SECRET_KEY": "YOUR_SECRET_KEY"}}'
@@ -75,10 +84,10 @@ curl https://wapo-testnet.phala.network/vaults -H 'Content-Type: application/jso
 # result: {"token":"13ea...77597","key":"3f6ae...75e88","succeed":true}
 ```
 
-4. visit https://wapo-testnet.phala.network/ipfs/IPFS_CID?key=3f6aefa661075e88
+4. visit https://wapo-testnet.phala.network/ipfs/IPFS_CID?key=KEY
 
 ### Useful links
 
-- Get testnet BNB token from [BNB testnet faucet](https://www.bnbchain.org/en/testnet-faucet)
-- Get testnet RPC from [BNB JSON-RPC Endpoint](https://docs.bnbchain.org/bnb-smart-chain/developers/rpc/#bsc-testnet-chainid-0x61-97-in-decimal)
+- Get testnet TEST token from [testnet faucet](https://www.alchemy.com/faucets/base-sepolia)
+- Get testnet RPC from [JSON-RPC Endpoint](https://docs.base.org/docs/using-base)
 - A starter project for wapo.js: [minimal-wapo-ts-starter](https://github.com/Leechael/minimal-wapo-ts-starter)
