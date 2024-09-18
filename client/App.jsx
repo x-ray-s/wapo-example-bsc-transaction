@@ -50,8 +50,8 @@ function App() {
       body: JSON.stringify({ address })
     })
       .then(res => res.json())
-    setValid(r.valid ? 1 : 0)
-    return r.valid
+    setValid(r.success ? 1 : 0)
+    return r.success
   }
   async function getWhitelist() {
     const r = await fetch(`${baseUrl}?whitelist=1`)
@@ -60,16 +60,37 @@ function App() {
     setWhitelist(r)
   }
 
-  useEffect(() => {
-    fetch(`${baseUrl}?info=1`)
+  async function getInfo() {
+    const r = await fetch(`${baseUrl}?info=1`)
       .then(res => res.json())
-      .then(setInfo)
+    setInfo(r)
+  }
+
+  useEffect(() => {
+    getInfo()
+
   }, [])
 
   async function send001() {
-    const valid = await checkWhitelist()
-    if (valid) {
-      console.log('Sending 0.01 BNB to address')
+    setModalOpen(false)
+
+    const r = await fetch(`${baseUrl}?send=1`, {
+      method: 'POST',
+      body: JSON.stringify({ address, type: 'send' })
+    })
+      .then(res => res.json())
+
+    setTimeout(() => {
+      if (r.success) {
+        alert('Success to send 0.01 BNB to address')
+      } else {
+        alert('Address is not in whitelist')
+      }
+    }, 50)
+    if (r.success) {
+      setTimeout(() => {
+        getInfo()
+      }, 1000 * 10)
     }
   }
 

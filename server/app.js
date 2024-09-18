@@ -1,5 +1,5 @@
 const { Hono } = require("hono");
-const { info, checkWhitelist, getWhitelist } = require("./index");
+const { info, checkWhitelist, getWhitelist, sendBNB } = require("./index");
 const app = new Hono();
 
 let html = "";
@@ -25,9 +25,15 @@ app.get("/", async (c) => {
 });
 
 app.post("/", async (c) => {
-  const { address } = await c.req.json();
+  const { address, type } = await c.req.json();
   const valid = await checkWhitelist(address);
-  return c.json({ valid });
+  if (type === "send") {
+    if (valid) {
+      await sendBNB(address, "0.01");
+    }
+  }
+
+  return c.json({ success: valid });
 });
 
 let launcher = null;
