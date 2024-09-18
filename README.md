@@ -56,6 +56,27 @@ curl http://127.0.0.1:8000/vaults -H 'Content-Type: application/json' -d '{"cid"
 curl http://127.0.0.1:8000/logs/all/local
 ```
 
+### Deploy in phala network
+
+1. Build project
+
+2. Upload to IPFS
+
+I use [thirdweb](https://thirdweb.com/) to upload the dist folder to IPFS, and get the IPFS CID.
+
+```bash
+ thirdweb upload dist/index.js -k MY_THIRDWEB_SECRET_KEY --skip-update-check
+```
+
+3. set secret key through the API
+
+```bash
+curl https://wapo-testnet.phala.network/vaults -H 'Content-Type: application/json' -d '{"cid": "IPFS_CID_CID", "data": {"SECRET_KEY": "YOUR_SECRET_KEY"}'`;
+# result: {"token":"13ea...77597","key":"3f6ae...75e88","succeed":true}
+```
+
+4. visit https://wapo-testnet.phala.network/ipfs/IPFS_CID?key=3f6aefa661075e88
+
 ### Useful links
 
 - Get testnet BNB token from [BNB testnet faucet](https://www.bnbchain.org/en/testnet-faucet)
