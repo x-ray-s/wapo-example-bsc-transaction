@@ -1,24 +1,24 @@
-if (process.env.RUNTIME !== "wapo") {
-  require("dotenv").config();
+if (process.env.RUNTIME !== 'wapo') {
+  require('dotenv').config();
 } else {
-  require("@phala/wapo-env");
+  require('@phala/wapo-env');
 }
 
-const ethers = require("ethers");
-const fetch = require("node-fetch");
-const provider = new ethers.JsonRpcProvider("https://sepolia.base.org");
+const ethers = require('ethers');
+const provider = new ethers.JsonRpcProvider('https://sepolia.base.org');
 let wapoENV = {};
-if (process.env.RUNTIME === "wapo") {
+if (process.env.RUNTIME === 'wapo') {
   wapoENV = JSON.parse(process.env.secret);
 }
 const secret = process.env.SECRET_KEY || wapoENV.SECRET_KEY;
+
 async function send(to, amount) {
   const signer = new ethers.Wallet(secret, provider);
 
   const balance = ethers.formatUnits(await provider.getBalance(signer.address));
 
   if (balance < amount) {
-    throw new Error("Insufficient balance");
+    throw new Error('Insufficient balance');
   }
 
   const tx = await signer.sendTransaction({
@@ -28,31 +28,25 @@ async function send(to, amount) {
 
   return tx;
 }
-const whitelist = ["0x6572005F94AfbbeE1EdF2D5143C8514459C8760D"];
+
+const whitelist = ['0x6572005F94AfbbeE1EdF2D5143C8514459C8760D'];
+
 function checkWhitelist(address) {
   //You can use external contracts or APIs, the hardcoded code is just for example
   return whitelist
     .map((address) => address.toLowerCase())
     .includes(address.toLowerCase());
 }
+
 function getWhitelist() {
   return whitelist;
 }
 
 async function info() {
   // example code, you can get transaction info from the blockchain
-  const network = await provider.getNetwork();
-
   const signer = new ethers.Wallet(secret, provider);
   const address = signer.address;
   const balance = ethers.formatUnits(await provider.getBalance(address));
-
-  return {
-    network,
-    address,
-    balance,
-    time: new Date().toISOString(),
-  };
 
   return {
     address,

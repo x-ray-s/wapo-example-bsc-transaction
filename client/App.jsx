@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 
-
 function Modal({ openModal, closeModal, children }) {
   const ref = useRef();
 
@@ -23,51 +22,45 @@ function Modal({ openModal, closeModal, children }) {
   );
 }
 
+const http = (path, config = {}) => {
+  const baseUrl = import.meta.env.DEV ? '/api' : window.location.pathname
+  const originSearch = new URLSearchParams(window.location.search)
+  const query = new URLSearchParams(config.query || {})
+  if (originSearch.get('key')) {
+    query.set('key', originSearch.get('key'))
+  }
+  const orign = window.location.origin
+  // wapo server route only support '/' 
+  const _path = path === '/' ? '' : path
+  const url = new URL(`${orign}${baseUrl}${_path}?${query.toString()}`);
+  const { query: _, ...withoutQuery } = config
+
+  return fetch(url.toString(), {
+    ...withoutQuery
+  })
+    .then(res => res.json())
+}
+
+const validateClass = (valid) => {
+  if (valid === 1) {
+    return 'valid'
+  } else if (valid === 0) {
+    return 'invalid'
+  }
+  return ''
+}
+
 function App() {
   const TOKEN = 'ETH'
   const AMOUNT = '0.001'
-  const [info, setInfo] = useState('')
-  const baseUrl = import.meta.env.DEV ? '/api' : window.location.pathname
 
+  const [info, setInfo] = useState('')
   const [address, setAddress] = useState('')
   const [valid, setValid] = useState(-1)
   const [whitelist, setWhitelist] = useState([])
   const [showWhitelist, setShowWhitelist] = useState(false)
   const [whitelistLoaded, setWhitelistLoaded] = useState(false)
-
   const [modalOpen, setModalOpen] = useState(false)
-
-  const http = (path, config = {}) => {
-
-    const originSearch = new URLSearchParams(window.location.search)
-
-    const query = new URLSearchParams(config.query || {})
-    if (originSearch.get('key')) {
-      query.set('key', originSearch.get('key'))
-    }
-    const orign = window.location.origin
-
-    // wapo server route only support '/' 
-    const _path = path === '/' ? '' : path
-
-    const url = new URL(`${orign}${baseUrl}${_path}?${query.toString()}`);
-    const { query: _, ...withoutQuery } = config
-
-    return fetch(url.toString(), {
-      ...withoutQuery
-    })
-      .then(res => res.json())
-  }
-
-
-  const validateClass = (valid) => {
-    if (valid === 1) {
-      return 'valid'
-    } else if (valid === 0) {
-      return 'invalid'
-    }
-    return ''
-  }
 
   async function checkWhitelist() {
     const r = await http('/', {
@@ -77,8 +70,8 @@ function App() {
     setValid(r.success ? 1 : 0)
     return r.success
   }
-  async function getWhitelist() {
 
+  async function getWhitelist() {
     const r = await http('/', { query: { whitelist: 1 } })
     setWhitelistLoaded(true)
     setWhitelist(r)
@@ -91,7 +84,6 @@ function App() {
 
   useEffect(() => {
     getInfo()
-
   }, [])
 
   async function send() {
@@ -109,6 +101,7 @@ function App() {
         alert('Address is not in whitelist')
       }
     }, 50)
+
     if (r.success) {
       setTimeout(() => {
         getInfo()

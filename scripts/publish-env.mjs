@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-const r = await fetch("https://wapo-testnet.phala.network/vaults", {
-  method: "POST",
+const r = await fetch('https://wapo-testnet.phala.network/vaults', {
+  method: 'POST',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     cid: process.env.CID,

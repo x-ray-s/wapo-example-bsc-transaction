@@ -1,11 +1,11 @@
 // copy from https://github.com/hannoeru/esbuild-plugin-raw/blob/main/src/index.ts
 
-const { readFile } = require("fs/promises");
-const path = require("path");
+const { readFile } = require('fs/promises');
+const path = require('path');
 
 function rawPlugin() {
   return {
-    name: "raw",
+    name: 'raw',
     setup(build) {
       build.onResolve({ filter: /\?raw$/ }, (args) => {
         return {
@@ -14,18 +14,18 @@ function rawPlugin() {
             isAbsolute: path.isAbsolute(args.path),
             resolveDir: args.resolveDir,
           },
-          namespace: "raw-loader",
+          namespace: 'raw-loader',
         };
       });
       build.onLoad(
-        { filter: /\?raw$/, namespace: "raw-loader" },
+        { filter: /\?raw$/, namespace: 'raw-loader' },
         async (args) => {
           const fullPath = args.pluginData.isAbsolute
             ? args.path
             : path.join(args.pluginData.resolveDir, args.path);
           return {
-            contents: await readFile(fullPath.replace(/\?raw$/, "")),
-            loader: "text",
+            contents: await readFile(fullPath.replace(/\?raw$/, '')),
+            loader: 'text',
           };
         }
       );
