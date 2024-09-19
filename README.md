@@ -2,7 +2,7 @@
 
 This is a simple example code for wapo.js. It implements the following features:
 
-- Secure BNB Transactions: Utilize a secure private key to facilitate BNB (Binance Coin) transactions.
+- Secure Transactions: Utilize a secure private key to facilitate transactions.
 - Whitelist Verification: Implement a check to determine if a given address is in the whitelist.
 - Simplified API Interface: Offer a API to pass information
 - Simplified UI: A example UI to use the API
