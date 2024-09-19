@@ -1,19 +1,26 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { viteSingleFile } from "vite-plugin-singlefile"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { viteSingleFile } from "vite-plugin-singlefile";
+import cdn from "vite-plugin-cdn-import";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react({
-    jsxRuntime: 'automatic',
-  }), viteSingleFile()],
+  plugins: [
+    cdn({
+      modules: ["react", "react-dom"],
+    }),
+    react({
+      jsxRuntime: "automatic",
+    }),
+    viteSingleFile(),
+  ],
   server: {
     proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
+      "/api": {
+        target: "http://localhost:3000",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, ""),
       },
-    }
-  }
-})
+    },
+  },
+});

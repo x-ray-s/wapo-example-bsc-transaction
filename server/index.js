@@ -5,9 +5,8 @@ if (process.env.RUNTIME !== "wapo") {
 }
 
 const ethers = require("ethers");
-// const fetch = require("node-fetch");
-const BSC_RPC_URL = "https://sepolia.base.org"; // testnet
-const provider = new ethers.JsonRpcProvider(BSC_RPC_URL);
+const fetch = require("node-fetch");
+const provider = new ethers.JsonRpcProvider("https://sepolia.base.org");
 let wapoENV = {};
 if (process.env.RUNTIME === "wapo") {
   wapoENV = JSON.parse(process.env.secret);
@@ -42,11 +41,18 @@ function getWhitelist() {
 
 async function info() {
   // example code, you can get transaction info from the blockchain
+  const network = await provider.getNetwork();
 
   const signer = new ethers.Wallet(secret, provider);
-
   const address = signer.address;
   const balance = ethers.formatUnits(await provider.getBalance(address));
+
+  return {
+    network,
+    address,
+    balance,
+    time: new Date().toISOString(),
+  };
 
   return {
     address,

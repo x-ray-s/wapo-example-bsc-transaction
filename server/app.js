@@ -52,3 +52,5 @@ if (process.env.RUNTIME === "wapo") {
 }
 
 globalThis.launcher = launcher;
+
+module.exports = { app, launcher };

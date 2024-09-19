@@ -11,9 +11,13 @@
     "build:server": "node esbuild.js",
     "build:preview": "npm run build:client && RUNTIME=node npm run build:server",
     "preview": "node dist/index.js",
+    "dev:set-env": "node scripts/set-env.mjs",
     "watch": "nodemon --watch client --watch server --exec 'npm run build'",
+    "dev": "concurrently \"npm run watch\" \"npm run start\"",
     "build": "npm run build:client && npm run build:server",
-    "start": "docker run --rm --name wapo -p 8000:80 -v $(pwd)/dist:/home/wapo phalanetwork/wapo-devserver"
+    "start": "docker run --rm --name wapo -p 8000:80 -v $(pwd)/dist:/home/wapo phalanetwork/wapo-devserver",
+    "test": "vitest --testTimeout=60000",
+    "ci": "npm run test && npm run build"
   },
   "keywords": [],
   "author": "",
@@ -27,13 +31,20 @@
     "hono": "^4.6.1",
     "node-fetch": "^2.7.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "vitest": "^2.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.0.1",
     "esbuild": "^0.23.1",
     "nodemon": "^3.1.5",
     "vite": "^5.4.4",
+    "vite-plugin-cdn-import": "^1.0.1",
     "vite-plugin-singlefile": "^2.0.2"
+  },
+  "engines": {
+    "node": ">= 18.0.0",
+    "npm": ">= 8.0.0"
   }
 }
